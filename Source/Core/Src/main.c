@@ -108,6 +108,23 @@ void clearAllClock(void) {
     LED_E_OFF(); LED_F_OFF(); LED_G_OFF(); LED_H_OFF();
     LED_J_OFF(); LED_K_OFF(); LED_L_OFF(); LED_M_OFF();
 }
+
+void setNumberOnClock(int num){
+	switch(num){
+	case(0): LED_A_ON(); break;
+	case(1): LED_B_ON(); break;
+	case(2): LED_C_ON(); break;
+	case(3): LED_D_ON(); break;
+	case(4): LED_E_ON(); break;
+	case(5): LED_F_ON(); break;
+	case(6): LED_G_ON(); break;
+	case(7): LED_H_ON(); break;
+	case(8): LED_J_ON(); break;
+	case(9): LED_K_ON(); break;
+	case(10): LED_L_ON(); break;
+	case(11): LED_M_ON(); break;
+	}
+}
 /* USER CODE END 0 */
 
 /**
