@@ -45,6 +45,7 @@ TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 int index_led = 0;
+int hour = 15, minute = 8, second = 50;
 int led_buffer[4] = {1, 2, 3, 4};
 /* USER CODE END PV */
 
@@ -122,6 +123,18 @@ void update7SEG(int index) {
             break;
     }
 }
+
+void updateClockBuffer(void){
+	if(hour < 0) hour = 0;
+	if(hour > 23) hour = 23;
+	if(minute < 0) minute = 0;
+	if(minute > 59) minute = 59;
+
+	led_buffer[0] = hour / 10;
+	led_buffer[1] = hour % 10;
+	led_buffer[2] = minute / 10;
+	led_buffer[3] = minute % 10;
+}
 /* USER CODE END 0 */
 
 /**
@@ -161,11 +174,23 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   setTimer1(25);
-  setTimer2(100);
+  setTimer2(1);
+
   while (1)
   {
 	  if(timer2_flag == 1){
 		  HAL_GPIO_TogglePin(LED_DOT_GPIO_Port, LED_DOT_Pin);
+		  second++;
+		  if(second >= 60){
+			  second = 0;
+			  minute++;
+		  }
+		  if(minute >= 60){
+			  minute = 0;
+			  hour++;
+		  }
+		  if( hour >= 24) hour = 0;
+		  updateClockBuffer();
 		  setTimer2(100);
 	  }
 	  if(timer1_flag == 1){
