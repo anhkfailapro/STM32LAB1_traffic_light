@@ -32,6 +32,43 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+// ==== LED A ====
+#define LED_A_ON()   HAL_GPIO_WritePin(LED_A_GPIO_Port, LED_A_Pin, SET)
+#define LED_A_OFF()  HAL_GPIO_WritePin(LED_A_GPIO_Port, LED_A_Pin, RESET)
+
+#define LED_B_ON()   HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, SET)
+#define LED_B_OFF()  HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, RESET)
+
+#define LED_C_ON()   HAL_GPIO_WritePin(LED_C_GPIO_Port, LED_C_Pin, SET)
+#define LED_C_OFF()  HAL_GPIO_WritePin(LED_C_GPIO_Port, LED_C_Pin, RESET)
+
+#define LED_D_ON()   HAL_GPIO_WritePin(LED_D_GPIO_Port, LED_D_Pin, SET)
+#define LED_D_OFF()  HAL_GPIO_WritePin(LED_D_GPIO_Port, LED_D_Pin, RESET)
+
+#define LED_E_ON()   HAL_GPIO_WritePin(LED_E_GPIO_Port, LED_E_Pin, SET)
+#define LED_E_OFF()  HAL_GPIO_WritePin(LED_E_GPIO_Port, LED_E_Pin, RESET)
+
+#define LED_F_ON()   HAL_GPIO_WritePin(LED_F_GPIO_Port, LED_F_Pin, SET)
+#define LED_F_OFF()  HAL_GPIO_WritePin(LED_F_GPIO_Port, LED_F_Pin, RESET)
+
+#define LED_G_ON()   HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, SET)
+#define LED_G_OFF()  HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, RESET)
+
+#define LED_H_ON()   HAL_GPIO_WritePin(LED_H_GPIO_Port, LED_H_Pin, SET)
+#define LED_H_OFF()  HAL_GPIO_WritePin(LED_H_GPIO_Port, LED_H_Pin, RESET)
+
+#define LED_J_ON()   HAL_GPIO_WritePin(LED_J_GPIO_Port, LED_J_Pin, SET)
+#define LED_J_OFF()  HAL_GPIO_WritePin(LED_J_GPIO_Port, LED_J_Pin, RESET)
+
+#define LED_K_ON()   HAL_GPIO_WritePin(LED_K_GPIO_Port, LED_K_Pin, SET)
+#define LED_K_OFF()  HAL_GPIO_WritePin(LED_K_GPIO_Port, LED_K_Pin, RESET)
+
+#define LED_L_ON()   HAL_GPIO_WritePin(LED_L_GPIO_Port, LED_L_Pin, SET)
+#define LED_L_OFF()  HAL_GPIO_WritePin(LED_L_GPIO_Port, LED_L_Pin, RESET)
+
+#define LED_M_ON()   HAL_GPIO_WritePin(LED_M_GPIO_Port, LED_M_Pin, SET)
+#define LED_M_OFF()  HAL_GPIO_WritePin(LED_M_GPIO_Port, LED_M_Pin, RESET)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,11 +79,24 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+const uint8_t SEG_TABLE[10] = {
+  0x3F, // 0 -> 0b00111111
+  0x06, // 1 -> 0b00000110
+  0x5B, // 2 -> 0b01011011
+  0x4F, // 3 -> 0b01001111
+  0x66, // 4 -> 0b01100110
+  0x6D, // 5 -> 0b01101101
+  0x7D, // 6 -> 0b01111101
+  0x07, // 7 -> 0b00000111
+  0x7F, // 8 -> 0b01111111
+  0x6F  // 9 -> 0b01101111
+};
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -83,14 +133,38 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+int counter = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    LED_A_OFF(); LED_B_OFF(); LED_C_OFF(); LED_D_OFF();
+    LED_E_OFF(); LED_F_OFF(); LED_G_OFF(); LED_H_OFF();
+    LED_J_OFF(); LED_K_OFF(); LED_L_OFF(); LED_M_OFF();
+
+    switch(counter) {
+      case 0: LED_A_ON(); break;
+      case 1: LED_B_ON(); break;
+      case 2: LED_C_ON(); break;
+      case 3: LED_D_ON(); break;
+      case 4: LED_E_ON(); break;
+      case 5: LED_F_ON(); break;
+      case 6: LED_G_ON(); break;
+      case 7: LED_H_ON(); break;
+      case 8: LED_J_ON(); break;
+      case 9: LED_K_ON(); break;
+      case 10: LED_L_ON(); break;
+      case 11: LED_M_ON(); break;
+    }
+
+    counter++;
+    if (counter >= 12) counter = 0;
+
+	  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -131,6 +205,36 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, LED_A_Pin|LED_B_Pin|LED_C_Pin|LED_D_Pin
+                          |LED_E_Pin|LED_F_Pin|LED_G_Pin|LED_H_Pin
+                          |LED_J_Pin|LED_K_Pin|LED_L_Pin|LED_M_Pin, RESET);
+
+  /*Configure GPIO pins : LED_A_Pin LED_B_Pin LED_C_Pin LED_D_Pin
+                           LED_E_Pin LED_F_Pin LED_G_Pin LED_H_Pin
+                           LED_J_Pin LED_K_Pin LED_L_Pin LED_M_Pin */
+  GPIO_InitStruct.Pin = LED_A_Pin|LED_B_Pin|LED_C_Pin|LED_D_Pin
+                          |LED_E_Pin|LED_F_Pin|LED_G_Pin|LED_H_Pin
+                          |LED_J_Pin|LED_K_Pin|LED_L_Pin|LED_M_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 }
 
 /* USER CODE BEGIN 4 */
