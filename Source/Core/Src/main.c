@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MAX_LED 4
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,7 +44,8 @@
 TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
-
+int index_led = 0;
+int led_buffer[4] = {1, 2, 3, 4};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,6 +94,34 @@ void display7SEG(int num){
 	HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, !(pattern & 0x20) ? SET : RESET);
 	HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, !(pattern & 0x40) ? SET : RESET);
 }
+
+void update7SEG(int index) {
+    HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
+    HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
+    HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
+    HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
+
+    switch(index) {
+        case 0:
+            HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, RESET);
+            display7SEG(led_buffer[0]);
+            break;
+        case 1:
+            HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, RESET);
+            display7SEG(led_buffer[1]);
+            break;
+        case 2:
+            HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, RESET);
+            display7SEG(led_buffer[2]);
+            break;
+        case 3:
+            HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, RESET);
+            display7SEG(led_buffer[3]);
+            break;
+        default:
+            break;
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -133,7 +162,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   setTimer1(50);
   setTimer2(100);
-  int ledIndex = 1;
   while (1)
   {
 	  if(timer2_flag == 1){
@@ -143,35 +171,9 @@ int main(void)
 	  if(timer1_flag == 1){
 		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 		setTimer1(50);
-		if(ledIndex == 1){
-			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, RESET);
-			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
-			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
-			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
-			display7SEG(1);
-			ledIndex = 2;
-		} else if(ledIndex == 2){
-			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
-			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, RESET);
-			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
-			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
-			display7SEG(2);
-			ledIndex = 3;
-		} else if(ledIndex == 3){
-			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
-			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
-			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, RESET);
-			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
-			display7SEG(3);
-			ledIndex = 0;
-		} else if(ledIndex == 0){
-			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
-			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
-			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
-			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, RESET);
-			display7SEG(0);
-			ledIndex = 1;
-		}
+		update7SEG(index_led);
+		index_led++;
+		if(index_led >= MAX_LED) index_led = 0;
 	  }
     /* USER CODE END WHILE */
 
