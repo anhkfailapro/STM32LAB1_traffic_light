@@ -103,7 +103,11 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void clearAllClock(void) {
+    LED_A_OFF(); LED_B_OFF(); LED_C_OFF(); LED_D_OFF();
+    LED_E_OFF(); LED_F_OFF(); LED_G_OFF(); LED_H_OFF();
+    LED_J_OFF(); LED_K_OFF(); LED_L_OFF(); LED_M_OFF();
+}
 /* USER CODE END 0 */
 
 /**
