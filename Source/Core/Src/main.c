@@ -125,6 +125,23 @@ void setNumberOnClock(int num){
 	case(11): LED_M_ON(); break;
 	}
 }
+
+void clearNumberOnClock(int num){
+	switch(num){
+	case(0): LED_A_OFF(); break;
+	case(1): LED_B_OFF(); break;
+	case(2): LED_C_OFF(); break;
+	case(3): LED_D_OFF(); break;
+	case(4): LED_E_OFF(); break;
+	case(5): LED_F_OFF(); break;
+	case(6): LED_G_OFF(); break;
+	case(7): LED_H_OFF(); break;
+	case(8): LED_J_OFF(); break;
+	case(9): LED_K_OFF(); break;
+	case(10): LED_L_OFF(); break;
+	case(11): LED_M_OFF(); break;
+	}
+}
 /* USER CODE END 0 */
 
 /**
