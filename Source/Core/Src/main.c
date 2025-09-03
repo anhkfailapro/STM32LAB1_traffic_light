@@ -70,8 +70,20 @@ const uint8_t SEG_TABLE[10] = {
   0x7F, // 8 -> 0b01111111
   0x6F  // 9 -> 0b01101111
 };
+
+void allOff7SEG(void){
+	HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, SET);
+	HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, SET);
+	HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, SET);
+	HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, SET);
+	HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, SET);
+	HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, SET);
+	HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, SET);
+}
+
 void display7SEG(int num){
 	if(num > 9) return;
+	allOff7SEG();
 	uint8_t pattern = SEG_TABLE[num];
 	HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, !(pattern & 0x01) ? SET : RESET);
 	HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, !(pattern & 0x02) ? SET : RESET);
@@ -120,23 +132,46 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   setTimer1(50);
+  setTimer2(100);
   int ledIndex = 1;
   while (1)
   {
+	  if(timer2_flag == 1){
+		  HAL_GPIO_TogglePin(LED_DOT_GPIO_Port, LED_DOT_Pin);
+		  setTimer2(100);
+	  }
 	  if(timer1_flag == 1){
 		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 		setTimer1(50);
 		if(ledIndex == 1){
 			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, RESET);
 			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
+			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
+			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
 			display7SEG(1);
 			ledIndex = 2;
 		} else if(ledIndex == 2){
 			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
 			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, RESET);
+			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
+			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
 			display7SEG(2);
+			ledIndex = 3;
+		} else if(ledIndex == 3){
+			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
+			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
+			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, RESET);
+			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, SET);
+			display7SEG(3);
+			ledIndex = 0;
+		} else if(ledIndex == 0){
+			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
+			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
+			HAL_GPIO_WritePin(NUM_3_GPIO_Port, NUM_3_Pin, SET);
+			HAL_GPIO_WritePin(NUM_4_GPIO_Port, NUM_4_Pin, RESET);
+			display7SEG(0);
 			ledIndex = 1;
-		} else ledIndex = 1;
+		}
 	  }
     /* USER CODE END WHILE */
 
@@ -239,14 +274,17 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|NUM_1_Pin|NUM_2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_DOT_Pin|LED_RED_Pin|NUM_1_Pin|NUM_2_Pin
+                          |NUM_3_Pin|NUM_4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SEG_A_Pin|SEG_B_Pin|SEG_C_Pin|SEG_D_Pin
                           |SEG_E_Pin|SEG_F_Pin|SEG_G_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_RED_Pin NUM_1_Pin NUM_2_Pin */
-  GPIO_InitStruct.Pin = LED_RED_Pin|NUM_1_Pin|NUM_2_Pin;
+  /*Configure GPIO pins : LED_DOT_Pin LED_RED_Pin NUM_1_Pin NUM_2_Pin
+                           NUM_3_Pin NUM_4_Pin */
+  GPIO_InitStruct.Pin = LED_DOT_Pin|LED_RED_Pin|NUM_1_Pin|NUM_2_Pin
+                          |NUM_3_Pin|NUM_4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -266,6 +304,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	timerRun1();
+	timerRun2();
 }
 /* USER CODE END 4 */
 
