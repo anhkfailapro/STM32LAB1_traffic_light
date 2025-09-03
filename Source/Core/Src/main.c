@@ -173,42 +173,33 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-int counter = 0;
-  /* USER CODE END 2 */
+  int counter = 0;
+    int ledHour = 0;
+    int ledMin = 0;
+    int ledSec = 0;
+    /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    LED_A_OFF(); LED_B_OFF(); LED_C_OFF(); LED_D_OFF();
-    LED_E_OFF(); LED_F_OFF(); LED_G_OFF(); LED_H_OFF();
-    LED_J_OFF(); LED_K_OFF(); LED_L_OFF(); LED_M_OFF();
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+  	  clearAllClock();
+  	  //RTC_TimeTypeDef sTime;
+  	  //HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+  	  ledHour = (counter / 3600) % 12;
+  	  ledMin = ((counter / 60) % 60) / 5;
+  	  ledSec =  (counter % 60) / 5;
+  	  setNumberOnClock(ledHour);
+  	  setNumberOnClock(ledMin);
+  	  setNumberOnClock(ledSec);
+  	  counter++;
+  	  HAL_Delay(1000);
+      /* USER CODE END WHILE */
 
-    switch(counter) {
-      case 0: LED_A_ON(); break;
-      case 1: LED_B_ON(); break;
-      case 2: LED_C_ON(); break;
-      case 3: LED_D_ON(); break;
-      case 4: LED_E_ON(); break;
-      case 5: LED_F_ON(); break;
-      case 6: LED_G_ON(); break;
-      case 7: LED_H_ON(); break;
-      case 8: LED_J_ON(); break;
-      case 9: LED_K_ON(); break;
-      case 10: LED_L_ON(); break;
-      case 11: LED_M_ON(); break;
+      /* USER CODE BEGIN 3 */
     }
-
-    counter++;
-    if (counter >= 12) counter = 0;
-
-	  HAL_Delay(1000);
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
+    /* USER CODE END 3 */
   }
-  /* USER CODE END 3 */
-}
 
 /**
   * @brief System Clock Configuration
