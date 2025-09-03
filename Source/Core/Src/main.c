@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "software_timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,6 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -40,6 +41,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 
@@ -47,6 +49,8 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -54,6 +58,29 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+const uint8_t SEG_TABLE[10] = {
+  0x3F, // 0 -> 0b00111111
+  0x06, // 1 -> 0b00000110
+  0x5B, // 2 -> 0b01011011
+  0x4F, // 3 -> 0b01001111
+  0x66, // 4 -> 0b01100110
+  0x6D, // 5 -> 0b01101101
+  0x7D, // 6 -> 0b01111101
+  0x07, // 7 -> 0b00000111
+  0x7F, // 8 -> 0b01111111
+  0x6F  // 9 -> 0b01101111
+};
+void display7SEG(int num){
+	if(num > 9) return;
+	uint8_t pattern = SEG_TABLE[num];
+	HAL_GPIO_WritePin(SEG_A_GPIO_Port, SEG_A_Pin, !(pattern & 0x01) ? SET : RESET);
+	HAL_GPIO_WritePin(SEG_B_GPIO_Port, SEG_B_Pin, !(pattern & 0x02) ? SET : RESET);
+	HAL_GPIO_WritePin(SEG_C_GPIO_Port, SEG_C_Pin, !(pattern & 0x04) ? SET : RESET);
+	HAL_GPIO_WritePin(SEG_D_GPIO_Port, SEG_D_Pin, !(pattern & 0x08) ? SET : RESET);
+	HAL_GPIO_WritePin(SEG_E_GPIO_Port, SEG_E_Pin, !(pattern & 0x10) ? SET : RESET);
+	HAL_GPIO_WritePin(SEG_F_GPIO_Port, SEG_F_Pin, !(pattern & 0x20) ? SET : RESET);
+	HAL_GPIO_WritePin(SEG_G_GPIO_Port, SEG_G_Pin, !(pattern & 0x40) ? SET : RESET);
+}
 /* USER CODE END 0 */
 
 /**
@@ -83,14 +110,34 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim2);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  setTimer1(50);
+  int ledIndex = 1;
   while (1)
   {
+	  if(timer1_flag == 1){
+		HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		setTimer1(50);
+		if(ledIndex == 1){
+			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, RESET);
+			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, SET);
+			display7SEG(1);
+			ledIndex = 2;
+		} else if(ledIndex == 2){
+			HAL_GPIO_WritePin(NUM_1_GPIO_Port, NUM_1_Pin, SET);
+			HAL_GPIO_WritePin(NUM_2_GPIO_Port, NUM_2_Pin, RESET);
+			display7SEG(2);
+			ledIndex = 1;
+		} else ledIndex = 1;
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -133,8 +180,93 @@ void SystemClock_Config(void)
   }
 }
 
-/* USER CODE BEGIN 4 */
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
 
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 7999;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 9;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|NUM_1_Pin|NUM_2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, SEG_A_Pin|SEG_B_Pin|SEG_C_Pin|SEG_D_Pin
+                          |SEG_E_Pin|SEG_F_Pin|SEG_G_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : LED_RED_Pin NUM_1_Pin NUM_2_Pin */
+  GPIO_InitStruct.Pin = LED_RED_Pin|NUM_1_Pin|NUM_2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : SEG_A_Pin SEG_B_Pin SEG_C_Pin SEG_D_Pin
+                           SEG_E_Pin SEG_F_Pin SEG_G_Pin */
+  GPIO_InitStruct.Pin = SEG_A_Pin|SEG_B_Pin|SEG_C_Pin|SEG_D_Pin
+                          |SEG_E_Pin|SEG_F_Pin|SEG_G_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+}
+
+/* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	timerRun1();
+}
 /* USER CODE END 4 */
 
 /**
