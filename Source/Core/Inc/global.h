@@ -12,9 +12,10 @@
 #include "software_timer.h"
 
 #define INIT 1
-#define AUTO_RED 2
-#define AUTO_YELLOW 4
-#define AUTO_GREEN 3
+#define S0 2 	//NS_Green, EW_Red
+#define S1 3 	//NS_Yellow, EW_Red
+#define S2 4 	//NS_Red, EW_Green
+#define S3 5	//NS_Red, EW_Yellow
 
 #define MAN_RED 12
 #define MAN_GREEN 13

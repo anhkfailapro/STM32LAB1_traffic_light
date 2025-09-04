@@ -10,53 +10,89 @@ void fsm_automatic_run(){
 	switch(status){
 	case INIT:
 		allOn();
-		status = AUTO_RED;
-		setTimer1(500);
-		counter = 5;
+		status = S0;
+		setTimer1(300);
+		counter = 3;
 		break;
-	case AUTO_RED:
-		LED_RED_ON();
-		LED_YELLOW_OFF();
-		LED_GREEN_OFF();
-		if(timer1_flag == 1){
-			status = AUTO_GREEN;
-			counter = 3;
-			setTimer1(300);
-		}
-		if(isButton1Pressed() == 1){
-			status = MAN_RED;
-			setTimer1(1000);
-		}
-		break;
-	case AUTO_GREEN:
+	case S0:
 		LED_RED_OFF();
 		LED_YELLOW_OFF();
 		LED_GREEN_ON();
-		display7SEG(counter);
+
+		RED_ON();
+		YELLOW_OFF();
+		GREEN_OFF();
+
 		if(timer1_flag == 1){
-			status = AUTO_YELLOW;
+			status = S1;
 			counter = 2;
 			setTimer1(200);
 		}
 		if(isButton1Pressed() == 1){
 			status = MAN_GREEN;
-			setTimer1(1000);
+			setTimer1(200);
 		}
 		break;
-	case AUTO_YELLOW:
+	case S1:
 		LED_RED_OFF();
 		LED_YELLOW_ON();
 		LED_GREEN_OFF();
+
+		RED_ON();
+		YELLOW_OFF();
+		GREEN_OFF();
+
 		display7SEG(counter);
 		if(timer1_flag == 1){
-			status = AUTO_RED;
-			counter = 5;
-			setTimer1(500);
+			status = S2;
+			counter = 3;
+			setTimer1(300);
 		}
 		if(isButton1Pressed() == 1){
 			status = MAN_YELLOW;
-			setTimer1(1000);
+			setTimer1(200);
 		}
+		break;
+	case S2:
+		LED_RED_ON();
+		LED_YELLOW_OFF();
+		LED_GREEN_OFF();
+
+		RED_OFF();
+		YELLOW_OFF();
+		GREEN_ON();
+
+		display7SEG(counter);
+		if(timer1_flag == 1){
+			status = S3;
+			counter = 2;
+			setTimer1(200);
+		}
+		if(isButton1Pressed() == 1){
+			status = MAN_RED;
+			setTimer1(200);
+		}
+		break;
+	case S3:
+		LED_RED_ON();
+		LED_YELLOW_OFF();
+		LED_GREEN_OFF();
+
+		RED_OFF();
+		YELLOW_ON();
+		GREEN_OFF();
+
+		display7SEG(counter);
+		if(timer1_flag == 1){
+			status = S0;
+			counter = 3;
+			setTimer1(300);
+		}
+		if(isButton1Pressed() == 1){
+			status = MAN_RED;
+			setTimer1(200);
+		}
+
 		break;
 	default:
 		break;
