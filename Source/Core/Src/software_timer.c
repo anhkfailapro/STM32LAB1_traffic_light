@@ -8,11 +8,30 @@
 
 #include "software_timer.h"
 
+int timer2_counter = 0;
+int timer2_flag = 0;
+
 int timer1_counter = 0;
 int timer1_flag = 0;
 
 int timer0_counter = 0;
 int timer0_flag = 0;
+
+void setTimer2(int duration){
+	timer2_counter = duration;
+	timer2_flag = 0;
+}
+
+void timerRun2(){
+	if(timer2_counter > 0)
+		if (--timer2_counter <= 0)
+			timer2_flag = 1;
+}
+
+void runTimer2(){
+	setTimer2(100);
+	timer2_flag = 0;
+}
 
 void setTimer1(int duration){
 	timer1_counter = duration;
@@ -35,4 +54,6 @@ void timerRun0(){
 		if (--timer0_counter <= 0)
 			timer0_flag = 1;
 }
+
+
 

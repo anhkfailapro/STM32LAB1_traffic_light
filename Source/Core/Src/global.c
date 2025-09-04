@@ -7,7 +7,9 @@
 #include "global.h"
 
 int status = 0;
+int status_ped = 0;
 int counter = 0;
+int counter_ped = 0;
 const uint8_t SEG_TABLE[10] = {
   0x3F, // 0 -> 0b00111111
   0x06, // 1 -> 0b00000110

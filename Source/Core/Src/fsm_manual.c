@@ -68,6 +68,12 @@ void fsm_manual_run(){
 			setTimer1(200);
 		}
 		break;
+	case PED_RED:
+		break;
+	case PED_YELLOW:
+		break;
+	case PED_GREEN:
+		break;
 	default: break;
 	}
 }

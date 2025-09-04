@@ -60,12 +60,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Button1_Pin GPIO_PIN_13
 #define Button1_GPIO_Port GPIOC
-#define Down_Pin GPIO_PIN_14
-#define Down_GPIO_Port GPIOC
-#define Up_Pin GPIO_PIN_15
-#define Up_GPIO_Port GPIOC
-#define Walk_Pin GPIO_PIN_0
-#define Walk_GPIO_Port GPIOD
+#define WR_Pin GPIO_PIN_1
+#define WR_GPIO_Port GPIOA
+#define WY_Pin GPIO_PIN_2
+#define WY_GPIO_Port GPIOA
+#define WG_Pin GPIO_PIN_3
+#define WG_GPIO_Port GPIOA
 #define AUTO_Pin GPIO_PIN_4
 #define AUTO_GPIO_Port GPIOA
 #define LED_RED_Pin GPIO_PIN_5
@@ -94,6 +94,12 @@ void Error_Handler(void);
 #define YELLOW_GPIO_Port GPIOA
 #define GREEN_Pin GPIO_PIN_10
 #define GREEN_GPIO_Port GPIOA
+#define Down_Pin GPIO_PIN_11
+#define Down_GPIO_Port GPIOA
+#define Up_Pin GPIO_PIN_12
+#define Up_GPIO_Port GPIOA
+#define Walk_Pin GPIO_PIN_13
+#define Walk_GPIO_Port GPIOA
 #define SEG_D_Pin GPIO_PIN_3
 #define SEG_D_GPIO_Port GPIOB
 #define SEG_E_Pin GPIO_PIN_4

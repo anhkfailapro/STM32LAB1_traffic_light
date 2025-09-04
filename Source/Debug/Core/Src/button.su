@@ -1,3 +1,12 @@
-button.c:21:5:isButton1Pressed	4	static
-button.c:28:6:subKey1Process	4	static
-button.c:33:6:getKey1Input	8	static
+button.c:24:5:isButton1Pressed	4	static
+button.c:31:6:subKey1Process	4	static
+button.c:36:6:getKey1Input	8	static
+button.c:67:5:isButton2Pressed	4	static
+button.c:74:6:subKey2Process	4	static
+button.c:79:6:getKey2Input	8	static
+button.c:110:5:isButton3Pressed	4	static
+button.c:117:6:subKey3Process	4	static
+button.c:122:6:getKey3Input	8	static
+button.c:156:5:isButton4Pressed	4	static
+button.c:163:6:subKey4Process	4	static
+button.c:168:6:getKey4Input	8	static
