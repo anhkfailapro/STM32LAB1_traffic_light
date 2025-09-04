@@ -16,6 +16,10 @@
 #define AUTO_YELLOW 4
 #define AUTO_GREEN 3
 
+#define MAN_RED 12
+#define MAN_GREEN 13
+#define MAN_YELLOW 14
+
 #define LED_RED_ON()   HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, RESET)   // active-high
 #define LED_RED_OFF()  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, SET)
 
@@ -37,5 +41,10 @@
 extern int status;
 extern int counter;
 extern const uint8_t SEG_TABLE[10];
+
+void allOn();
+void display7SEG(int num);
+void display7SEG2(int num);
+void SEG_Off();
 
 #endif /* INC_GLOBAL_H_ */
