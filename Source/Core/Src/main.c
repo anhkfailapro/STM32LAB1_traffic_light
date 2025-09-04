@@ -205,6 +205,7 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -218,11 +219,23 @@ static void MX_GPIO_Init(void)
                           |SEG_E_Pin|SEG_F_Pin|SEG_G_Pin|A_Pin
                           |B_Pin|C_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : Button1_Pin */
-  GPIO_InitStruct.Pin = Button1_Pin;
+  /*Configure GPIO pins : Button1_Pin Down_Pin */
+  GPIO_InitStruct.Pin = Button1_Pin|Down_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(Button1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Up_Pin */
+  GPIO_InitStruct.Pin = Up_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Up_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Walk_Pin */
+  GPIO_InitStruct.Pin = Walk_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Walk_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : AUTO_Pin LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin
                            RED_Pin YELLOW_Pin GREEN_Pin */
@@ -246,13 +259,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure peripheral I/O remapping */
+  __HAL_AFIO_REMAP_PD01_ENABLE();
+
 }
 
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	timerRun0();
 	timerRun1();
-	getKeyInput();
+	getKey1Input();
 }
 /* USER CODE END 4 */
 
